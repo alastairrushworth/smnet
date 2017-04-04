@@ -1,0 +1,9 @@
+export(smnet, get_adjacency, plot.smnet, predict.smnet, summary.smnet, m, network, show_weights)
+S3method(plot, smnet)
+S3method(summary, smnet)
+S3method(predict, smnet)
+
+
+import(SSN, splines, DBI, RSQLite, methods, stats, graphics, spam)
+importFrom("grDevices", "heat.colors")
+importFrom("utils", "modifyList")

@@ -1,0 +1,14 @@
+Package: smnet
+Type: Package
+Title: Smoothing for Stream Network Data
+Version: 2.1.1
+Date: 2017-03-30
+Depends: R (>= 3.0.1), SSN, spam
+Imports: splines, RSQLite, DBI, methods, stats, graphics
+Author: Alastair Rushworth
+Maintainer: Alastair Rushworth <alastairmrushworth@gmail.com>
+Description: Fits flexible additive models to data on stream networks, taking account of flow-connectivity of the network.  Models are fitted using penalised least squares.
+License: GPL-2
+LazyLoad: yes
+ByteCompile: yes
+Repository: CRAN

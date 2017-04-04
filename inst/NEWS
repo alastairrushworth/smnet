@@ -1,0 +1,38 @@
+	CHANGES IN VERSION 2.1.1 30/03/2017
+	-----------------------------------
+	
+	- updated network names in examples to avoid error due to attempt to overwrite a network 
+
+
+	CHANGES IN VERSION 2.1 29/08/2016
+	---------------------------------
+	
+	- network(max.df = ...) removed and replaced with network(fixed.df = ...), for fixing the 
+	  degrees of freedom in a network smooth.
+	- parameter combinations causing optimiser to encounter singular penalty matrices are now 
+	  avoided.
+	- fixed error with control = list(approx = 1) 
+	- cyclical smooths via m(X, cyclical = T) and interactions via m(X, Y, cyclical = c(T, F))
+	- n-dimensional smooth accepted using m()
+	- removed ``network-node'' option for plot.smnet
+	- removed dependency on 'igraphs'
+	
+	
+	CHANGES IN VERSION 2.0 08/06/2015
+	---------------------------------
+
+  	- get_adjacency and smnet reworked so that SSN objects with multiple networks supported.  
+	  get_adjacency now returns a list containing the adjacency matrix and the binary id table 
+	  from the SSN object.
+	- significant changes to plotting of spatial networks
+	- dependence on 'dfoptim' package not required, optimiser changed to 'optim()'
+	- show_weights() function added for exploring valid weights in data
+	- automatic Shreve weights, "autoShreve"", option added for 'weights' argument in network if 
+	  valid weights are not available
+	- examples updated 
+
+	
+
+
+
+  
