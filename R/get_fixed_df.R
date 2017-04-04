@@ -1,3 +1,4 @@
+# added a random comment
 get_fixed_df <- function(P.flat, rhoInput, approx, ridgeM, XTX.spam, cholFactor, info, Xy, Xw, X.spam, X.list, y, maxit, fixed.df){
   X.dim     <- lapply(X.list, ncol)
   n.terms   <- length(X.list)
