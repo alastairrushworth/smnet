@@ -116,38 +116,48 @@ smnet<-function(formula, data.object, netID = 1, method = "AICC", control = NULL
   } else ord <- rid_data <- weight <- NULL
 
   # create model objects
-  model_objects <- get_model_objects(formula = formula, data = data, 
-                                     adjacency = adjacency, 
-                                     response.locs = response.locs, weight = weight,  
-                                     rid_data = rid_data, netID = netID, ord = ord, 
-                                     control = default.control, formulaout = formulaout, 
-                                     fixed.df = fixed.df)
+  model_objects <- 
+    get_model_objects(
+      formula = formula, data = data, 
+      adjacency = adjacency, 
+      response.locs = response.locs, 
+      weight = weight,  
+      rid_data = rid_data, 
+      netID = netID, ord = ord, 
+      control = default.control, 
+      formulaout = formulaout, 
+      fixed.df = fixed.df
+    )
   
   #  choose optimal smooth parameters using box constrained Nelder-Mead search
   opt <- with(model_objects, {
     if((n.smooth == 0) && (!net)){
-      get_lm_fit(X.spam = X.spam, X.list = X.list, XTX.spam = XTX.spam, response = response, 
-                 lin.means = lin.means, n.linear = n.linear)         
+      get_lm_fit(
+        X.spam = X.spam, 
+        X.list = X.list, 
+        XTX.spam = XTX.spam, 
+        response = response, 
+        lin.means = lin.means, 
+        n.linear = n.linear
+      )         
     } else {
-      get_optimal_smooth(P.list = P.list, X.spam = X.spam, X.list=X.list, XTX.spam=XTX.spam, 
-                         response=response, control = default.control, net=net, n.linear = n.linear,
-                         lin.names = lin.names, sm.names = sm.names, lin.means = lin.means,
-                         method = method, Pwee.list = Pwee.list, fixed.df = fixed.df)   
+      get_optimal_smooth(
+        P.list = P.list, 
+        X.spam = X.spam, 
+        X.list = X.list, 
+        XTX.spam = XTX.spam, 
+        response = response, 
+        control = default.control, 
+        net = net, 
+        n.linear = n.linear,
+        lin.names = lin.names, 
+        sm.names = sm.names, 
+        lin.means = lin.means,
+        method = method, 
+        Pwee.list = Pwee.list, 
+        fixed.df = fixed.df
+      )   
     }
-#     
-#       P.list<-model_objects$P.list
-#       Pwee.list<-model_objects$Pwee.list
-#       X.spam<-model_objects$X.spam
-#       X.list<-model_objects$X.list
-#       XTX.spam<-model_objects$XTX.spam
-#       response<-model_objects$response
-#       control<-model_objects$control
-#       n.linear<-model_objects$n.linear
-#       sm.names<-model_objects$sm.names
-#       smp<-model_objects$smp
-#       crit<-model_objects$crit
-#       verbose<-model_objects$verbose
-
   }
   )
   
@@ -158,8 +168,8 @@ smnet<-function(formula, data.object, netID = 1, method = "AICC", control = NULL
   R2     <- 1 - sum((response - fitted.values)^2)/sum((response - mean(response))^2)
   np     <- ifelse(is.null(opt$ED), ncol(model_objects$X.spam), opt$ED)
   R2.adj <- R2 - ((1-R2)*np)/(nrow(model_objects$X.spam) - np - 1)
-  cat(paste("   n = ", (nrow(model_objects$X.spam)), sep = ""))
-  cat(paste("  R2.adj", " = ", round(R2.adj, 3), sep = ""))
+  if(control$verbose) cat(paste("   n = ", (nrow(model_objects$X.spam)), sep = ""))
+  if(control$verbose) cat(paste("  R2.adj", " = ", round(R2.adj, 3), sep = ""))
 
   # create output list
   outputList               <- vector("list")

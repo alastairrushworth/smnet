@@ -1,4 +1,4 @@
-summary.smnet<-function(object, ...){
+summary.smnet<-function(object, verbose = TRUE, ...){
   adjacency  <- object$internals$adjacency
   n.smooth   <- object$internals$n.smooth
   retPrint   <- object$internals$retPrint
@@ -32,16 +32,23 @@ summary.smnet<-function(object, ...){
     pars          <- beta_hat[unit.locations]
     ret.mat       <- cbind(pars, separs, pars/separs, pt(abs(pars/separs), df = n - ED, lower.tail = FALSE) * 2)
     ret           <- as.data.frame(matrix(prettyNum(ret.mat, digits = 5), nrow = length(pars), byrow = F))
+    
     rownames(ret) <- c("(Intercept)", lin.names) 
     colnames(ret) <- c("Estimate", "Std. Error", "t value", "Pr(>|t|)")
-    cat("\n-----------------------------------------------\nLinear terms:\n-----------------------------------------------\n")
-    print(ret)
+    if(verbose){
+      cat("\n-----------------------------------------------\nLinear terms:\n-----------------------------------------------\n")
+      print(ret)
+    }
   }
-  if(n.smooth + !is.null(adjacency) > 0){
-    cat("\n\n-----------------------------------------------\nSmooth terms:\n-----------------------------------------------\n")
-    print(as.data.frame(retPrint))
-    cat("\n")
+  if(verbose){
+    if(n.smooth + !is.null(adjacency) > 0){
+      cat("\n\n-----------------------------------------------\nSmooth terms:\n-----------------------------------------------\n")
+      print(as.data.frame(retPrint))
+      cat("\n")
+    }
   }
+  
+  # return the summarise quietly
   invisible(list(linear.terms = ret, smooth.terms = as.data.frame(retPrint)))
 }
 
