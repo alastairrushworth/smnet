@@ -11,19 +11,19 @@ get_optimal_smooth<-function(P.list, X.spam, XTX.spam, X.list,
   # SET UP COMPONENTS AND SIMPLE SUMMARIES REQUIRED FOR GETTING OPTIMAL PARAMETERS
   # ------------------------------------------------------------------------------
   # number of smoothing components (this is usually the same as or less than the number of smoothing pars)
-  n.smooth.comps<-length(P.list)
+  n.smooth.comps <- length(P.list)
   # vector where each element describes the number of smooth pars associated with each smooth component
-  stretch_index<-vector("numeric", length = n.smooth.comps)
-  for(i in 1:length(P.list)) stretch_index[i]<-ifelse(class(P.list[[i]]) == "list", length(P.list[[i]]), 1)
+  stretch_index <- vector("numeric", length = n.smooth.comps)
+  for(i in 1:length(P.list)) stretch_index[i] <- ifelse(class(P.list[[i]]) == "list", length(P.list[[i]]), 1)
   # unnest the list of penalty matrices
   # P.flat    <- make_flat(P.list)
   P.flat    <- unlist(P.list, use.names = F)
   # Pwee.flat <- make_flat(Pwee.list)
   Pwee.list   <- unlist(Pwee.list, use.names = F)
   # the total number of smoothing parameters (=sum(stretch_index))
-  n.smooth.pars      <-length(P.flat)
+  n.smooth.pars <- length(P.flat)
   # length of the response vector
-  n         <-length(response)
+  n         <- length(response)
   # number of columns associated with each component of the data matrix
   X.dim     <- lapply(X.list, ncol)
   # number of components in the model - includes intercept and linear variables
@@ -178,7 +178,7 @@ get_optimal_smooth<-function(P.list, X.spam, XTX.spam, X.list,
         cat(paste("Convergence reached in", nits, "iterations after", ntime, "s \n\n"))
       } else { cat("Warning, convergence was not reached \n\n")}   
     }
-  } else if(length(P.flat) == 1) cat(paste("Convergence reached after", ntime, "s \n\n"))
+  } else if(length(P.flat) == 1) if(control$verbose) cat(paste("Convergence reached after", ntime, "s \n\n"))
 
   
   # PRINT THE SMOOTHING PARAMETERS, AND ASSOCIATED EFFECTIVE DIMENSIONS
@@ -215,7 +215,7 @@ get_optimal_smooth<-function(P.list, X.spam, XTX.spam, X.list,
     print(as.data.frame(retPrint)) 
   }
   function_min <- ifelse(length(P.flat) == 1, round(optimal$objective, 3), round(optimal$value, 3))
-  cat(paste("\n\n", method, " = ", function_min, sep = ""))
+  if(control$verbose) cat(paste("\n\n", method, " = ", function_min, sep = ""))
   # RETURN MODEL OUTPUT
   # ------------------------------------------------------------------------------
   list(pars = exp(rhoOptim), beta_hat = beta_hat, ED = 2*ED1 - ED2, fit = fit, 
