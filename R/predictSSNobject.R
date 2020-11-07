@@ -2,13 +2,14 @@
 predictSSNobject<-function(object){
   
   #   put all of the components of new design matrix in a list
-  newX<-vector("list")
+  newX <- vector("list")
   
   # extract the prediction locations and the prediction data matrix
   if(class(object$ssn.object) == "SpatialStreamNetwork"){
-    rids     <- object$ssn.object@data$rid#[object$ssn.object@data$netID == netID]
+    rids     <- object$ssn.object@data$rid[object$ssn.object@data$netID == object$internals$netID]
     rid_ord  <- rids[order(rids)]
     dfPred   <- getSSNdata.frame(object$ssn.object, "preds")
+    dfPred   <- dfPred[dfPred$netID == object$internals$netID, ]
     ridPred  <- as.numeric(as.character(dfPred[,"rid"]))
   }
   
@@ -39,9 +40,12 @@ predictSSNobject<-function(object){
   
   if(object$internals$net){
     # construct network component
-    newX <- c(newX, spam(x = list(i = 1:length(ridPred), j = ridPred, 
-                                val = rep(1, length(ridPred))), nrow = length(ridPred), 
-                       ncol = ncol(object$internals$X.list[[length(object$internals$X.list)]])))
+    newX <- c(newX, 
+              spam(x = list(i = 1:length(ridPred), 
+                            j = ridPred, 
+                            val = rep(1, length(ridPred))), 
+                   nrow = length(ridPred), 
+                   ncol = ncol(object$internals$X.list[[length(object$internals$X.list)]])))
   }
   
   #   put together the linear, smooth and network components
