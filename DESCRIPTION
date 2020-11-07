@@ -1,8 +1,8 @@
 Package: smnet
 Type: Package
 Title: Smoothing for Stream Network Data
-Version: 2.1.1
-Date: 2017-03-30
+Version: 2.1.2
+Date: 2020-11-07
 Depends: R (>= 3.0.1), SSN, spam
 Imports: splines, RSQLite, DBI, methods, stats, graphics
 Author: Alastair Rushworth
@@ -12,3 +12,4 @@ License: GPL-2
 LazyLoad: yes
 ByteCompile: yes
 Repository: CRAN
+Suggests: testthat
