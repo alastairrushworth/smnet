@@ -1,0 +1,13 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^tests$
+^checks\.R$
+^README\.Rmd$
+^README\.md$
+^NEWS\.Rmd$
+^hex$
+^\.travis\.yml$
+^\.Rproj\.user$
+^README.html$
+^\.Rout$
+^\.RData

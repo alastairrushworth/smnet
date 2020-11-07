@@ -3,6 +3,5 @@
 .RData
 .Ruserdata
 smnet.Rproj
-.Rbuildignore
 Rplot.pdf
 .DS_Store
