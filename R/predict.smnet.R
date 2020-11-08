@@ -18,6 +18,6 @@
 #' @export
 #' 
 predict.smnet <- function(object, newdata = NULL, ...){
-  out <- predictSSNobject(object = object)
+  out <- predictSSNobject(object = object, newdata = newdata)
   return(out)
 }

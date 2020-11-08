@@ -1,15 +1,19 @@
 #' @importFrom spam cbind.spam
 
-predictSSNobject <- function(object){
+predictSSNobject <- function(object, newdata){
   
   #   put all of the components of new design matrix in a list
   newX <- vector("list")
   
   # extract the prediction locations and the prediction data matrix
-  if(class(object$ssn.object) == "SpatialStreamNetwork"){
-    rids     <- object$ssn.object@data$rid[object$ssn.object@data$netID == object$internals$netID]
-    rid_ord  <- rids[order(rids)]
+  if(is.null(newdata)){
+    # rids     <- object$ssn.object@data$rid[object$ssn.object@data$netID == object$internals$netID]
+    # rid_ord  <- rids[order(rids)]
     dfPred   <- getSSNdata.frame(object$ssn.object, "preds")
+    dfPred   <- dfPred[dfPred$netID == object$internals$netID, ]
+    ridPred  <- as.numeric(as.character(dfPred[,"rid"]))
+  } else {
+    dfPred   <- newdata
     dfPred   <- dfPred[dfPred$netID == object$internals$netID, ]
     ridPred  <- as.numeric(as.character(dfPred[,"rid"]))
   }

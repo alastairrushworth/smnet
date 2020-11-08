@@ -20,11 +20,11 @@ test_that("Linear model with network", {
   plot(mod_smn, type = "full", weight = 0.2, shadow = 2, 
        xlim = c(1060000, 1130000), ylim = c(1380000, 1480000))
   expect_equal(
-    names(predict(mod_smn, newdata = getSSNdata.frame("SoCentralOR.ssn", "preds"))),
+    names(predict(mod_smn, newdata = getSSNdata.frame(mf, "preds"))),
     c('predictions', 'predictions.se')
   )
   expect_equal(
-    names(predict(mod_smn, newdata = getSSNdata.frame("SoCentralOR.ssn", "Obs"))),
+    names(predict(mod_smn, newdata = getSSNdata.frame(mf, "Obs"))),
     c('predictions', 'predictions.se')
   )
 })

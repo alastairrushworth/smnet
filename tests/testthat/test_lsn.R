@@ -24,7 +24,7 @@ test_that("Linear model with network", {
     c('predictions', 'predictions.se')
   )
   expect_equal(
-    names(predict(mod_smn, newdata = getSSNdata.frame("lsn.ssn", "Obs"))),
+    names(predict(mod_smn, newdata = getSSNdata.frame(mf, "Obs"))),
     c('predictions', 'predictions.se')
   )
 })
