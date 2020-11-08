@@ -1,6 +1,14 @@
+#' @importFrom RSQLite dbDriver
+#' @importFrom RSQLite dbConnect
+#' @importFrom RSQLite dbUnloadDriver
+#' @importFrom RSQLite dbListTables
+#' @importFrom RSQLite dbDisconnect
+#' @importFrom RSQLite dbGetQuery
+#' @importFrom RSQLite SQLite
+
 get_binaryIDs<-function(path, net = 1){
 	# connect to binaryID.db to import vector of binaryIDs
-	driver<-dbDriver("SQLite")
+	driver <- dbDriver("SQLite")
   # open a connection to the binary ID table
 	connect<-try(dbConnect(SQLite(), paste(path, "/binaryID.db", sep = "")), silent = TRUE)
 	if(class(connect) == "try-error"){

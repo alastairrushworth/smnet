@@ -1,3 +1,8 @@
+
+#' @importFrom stats terms
+#' @importFrom stats reformulate
+#' @export
+
 m <- function (...,  k = -1, cyclic = F) {
   vars   <- as.list(substitute(list(...)))[-1]
   d      <- length(vars)

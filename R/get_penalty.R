@@ -1,3 +1,6 @@
+#' @importFrom spam circulant.spam
+#' @importFrom spam crossprod.spam
+
 get_penalty <- function(ncol, cyclic = F){
   if(!cyclic){
     zvec     <- rep(0, ncol)
@@ -8,9 +11,7 @@ get_penalty <- function(ncol, cyclic = F){
     circ     <- circ[-nrow(circ),]
     out      <- t(circ) %*% circ
   } else {
-    # varb_support <- abs(diff(range(varb)))
-    # knotspace    <- varb_support/(ncol + 6 + 1)                  
-    out          <- crossprod(circulant.spam(c(2* cos((2 * pi) / ncol), -1, rep(0, (ncol - 3)), -1)))
+    out      <- crossprod.spam(circulant.spam(c(2* cos((2 * pi) / ncol), -1, rep(0, (ncol - 3)), -1)))
   }
   out
 }

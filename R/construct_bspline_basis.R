@@ -1,3 +1,4 @@
+#' @importFrom spam diag.spam
 construct_bspline_basis <- function(variables, dimensions, cyclic, range.variables = variables){
   # if only a single variable, then build spline basis
   variables.mat       <- as.matrix(variables)

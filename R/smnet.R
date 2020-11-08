@@ -1,11 +1,176 @@
+#' Additive Modelling for Stream Networks
+#' 
+#' @description Fits (Gaussian) additive models to river network data based on the 
+#' flexible modelling framework described in O'Donnell et al. (2014).  Data must be 
+#' in the form of a \code{SpatialStreamNetwork} object as used by the \code{SSN} 
+#' package (Ver Hoef et al., 2012).   Smoothness of covariate effects is represented
+#'  via a penalised B-spline basis (P-splines) and parameter estimates are obtained 
+#'  using penalised least-squares.  Optimal smoothness is achieved by optimization 
+#'  of \code{AIC}, \code{GCV} or \code{AICC}.  The formula interpreter used for 
+#'  penalised additive components is modelled on the code found in the package 
+#'  \code{mgcv}. 
+#' 
+#' @details 
+#' \code{control} is a list whose elements control smoothness selection: 
+#' \code{maxit} limits the number of iterations made by the optimiser (default  = 500).  
+#' \code{approx}, positive integer, if specified indicates the number of Monte-Carlo 
+#' samples to collect using an approximate version of performance criterion when direct 
+#' evaluation is slow - this may be much faster if the network has a large number of 
+#' segments or the data is large, for example \code{approx  = 100} often works well 
+#' (defaults to \code{NULL}).  \code{checks}, logical, specifies whether additivity 
+#' checks should be performed on the input weights default = \code{TRUE}.  
+#' \code{trace}, default = 0, if set to 1, \code{optim} will print progress.   
+#' \code{tol}, the relative tolerance of \code{optim}.  \code{optim.method}, 
+#' the optimiser - default is "Nelder-Mead" see \code{?optim} for details.
+#' 
+#' @param formula A formula statement similar to those used by \code{lm} and \code{mgcv:::gam}.  
+#' Smooth functions are represented with \code{m(..., k = 20)} function, up to 2d smooth 
+#' interactions are currently supported.  Spatial network components are specified using 
+#' \code{network(...)} function.  Further details can be found in \link{m} and \link{network} 
+#' and the examples below.
+#' @param data.object An  object of class \code{SpatialStreamNetwork}.
+#' @param netID Integer indicating the particular stream network to model, generally only 
+#' user-specified when multiple networks are contained within \code{data.object}, default is 1. 
+#' @param method Character string determining the performance criterion for choosing optimal 
+#' smoothness, options are \code{"AICC"}, \code{"AIC"} or \code{"GCV"}. 
+#' @param control A list of options that control smoothness selection via optimisation.  
+#' See 'Details'.
+#' 
+#' @return Object of class \code{smnet} with components
+#' \itemize{
+#' \item{fitted.values}{vector of fitted values}
+#' \item{residuals}{vector of residuals: response minus fitted values}
+#' \item{coefficients}{vector of parameter estimates}
+#' \item{R2}{R^2 statistic}
+#' \item{R2.adj}{adjusted R^2 statistic}
+#' \item{df.residual}{residual degrees of freedom}
+#' \item{ssn.object}{unchanged SSN input data object}
+#' \item{internals}{model objects for internal use by other functions}
+#' }
+#' 
+#' @author Alastair Rushworth
+#' @seealso   \code{\link[=smnet]{get_adjacency}}, \code{\link{plot.smnet}}
+#' @references 
+#' Ver Hoef, J.M.,  Peterson, E.E., Clifford, D., Shah, R.  (2012)   SSN: An R Package for Spatial Statistical Modeling on Stream Networks 
+#' O' Donnell, D., Rushworth, A.M., Bowman, A.W., Scott, E.M., Hallard, M.  (2014) Flexible regression models over river networks.  Journal of the Royal Statistical Society: Series C (Applied Statistics). 63(1) 47--63.
+#' Reinhard Furrer, Stephan R. Sain (2010). spam: A Sparse Matrix R
+#' Package with Emphasis on MCMC Methods for Gaussian Markov Random
+#' Fields. Journal of Statistical Software, 36(10), 1-25. URL: http://www.jstatsoft.org/v36/i10/
+#' @import SSN
+#' @export
+#' @aliases smnet
+#' @keywords network
+#' @keywords p-spline
+#' @examples   
+#' # As an example, create a simulated SSN object
+#' # Save the object to a temporary location
+#' set.seed(12)
+#' ssn_path <- paste(tempdir(), "/example_network", sep = "")
+#' 
+#' # If example network doesn't already exist, then attempt to create it
+#' # Otherwise, read from the temporary directory
+#' example_network <- try(importSSN(ssn_path, predpts = 'preds', o.write = TRUE), silent = TRUE)
+#' if('try-error' %in% class(example_network)){
+#' example_network <- createSSN(
+#'       n            = 50,
+#'       obsDesign    = binomialDesign(200), 
+#'       predDesign   = binomialDesign(50),
+#'       importToR    = TRUE, 
+#'       path         = ssn_path,
+#'       treeFunction = iterativeTreeLayout
+#'   )
+#' }
+#
+#' 
+#' # plot the simulated network structure with prediction locations
+#' # plot(example_network, bty = "n", xlab = "x-coord", ylab? = "y-coord")
+#' 
+#' ## create distance matrices, including between predicted and observed
+#' createDistMat(example_network, "preds", o.write = TRUE, amongpred = TRUE)
+#' 
+#' ## extract the observed and predicted data frames
+#' observed_data            <- getSSNdata.frame(example_network, "Obs")
+#' prediction_data          <- getSSNdata.frame(example_network, "preds")
+#' 
+#' ## associate continuous covariates with the observation locations
+#' #  data generated from a normal distribution
+#' obs                      <- rnorm(200)
+#' observed_data[,"X"]      <- obs
+#' observed_data[,"X2"]     <- obs^2
+#' 
+#' ## associate continuous covariates with the prediction locations
+#' #  data generated from a normal distribution
+#' pred                     <- rnorm(50) 
+#' prediction_data[,"X"]    <- pred
+#' prediction_data[,"X2"]   <- pred^2
+#' 
+#' ## simulate some Gaussian data that follows a 'tail-up' spatial process
+#' sims <- SimulateOnSSN(
+#'   ssn.object      = example_network, 
+#'   ObsSimDF        = observed_data, 
+#'   PredSimDF       = prediction_data,  
+#'   PredID          = "preds",  
+#'   formula         = ~ 1 + X,
+#'   coefficients    = c(1, 10),
+#'   CorModels       = c("Exponential.tailup"), 
+#'   use.nugget      = TRUE,
+#'   CorParms        = c(10, 5, 0.1),
+#'   addfunccol      = "addfunccol")$ssn.object
+#' 
+#' 
+#' ## extract the observed and predicted data frames, now with simulated values
+#' sim1DFpred         <- getSSNdata.frame(sims, "preds")
+#' sim1preds          <- sim1DFpred[,"Sim_Values"]
+#' sim1DFpred[,"Sim_Values"] <- NA
+#' sims               <- putSSNdata.frame(sim1DFpred, sims, "preds")
+#' 
+#' # create the adjacency matrix for use with smnet
+#' adjacency    <- get_adjacency(
+#'   ssn_path, 
+#'   net = 1
+#' )
+#' 
+#' # not run - plot the adjacency matrix
+#' # display(adjacency[[1]])
+#' 
+#' # sometimes it is useful to see which variables are valid network weights 
+#' # in the data contained within the SSN object
+#' show_weights(sims, adjacency)
+#' 
+#' # fit a penalised spatial model to the stream network data
+#' # Sim_Values are quadratic in the X covariate.  To highlight 
+#' # the fitting of smooth terms, this is treated as non-linear 
+#' # and unknown using m().
+#' mod_smn       <- smnet(formula = Sim_Values ~ m(X) + m(X2) + 
+#'                        network(adjacency = adjacency, weight = "shreve"), 
+#'                        data.object = sims, netID = 1)
+#' 
+#' # not run - plot different summaries of the model
+#' plot(mod_smn, type = "network-covariates")
+#' plot(mod_smn, type = "network-segments", weight = 4, shadow = 2)
+#' plot(mod_smn, type = "network-full", weight = 4, shadow = 2)
+#' 
+#' # obtain predictions at the prediction locations and plot 
+#' # against true values
+#' preds <- predict(mod_smn, newdata = getSSNdata.frame(sims, "preds"))
+#' plot(preds$predictions, sim1preds)
+#' 
+#' # obtain summary of the fitted model
+#' summary(mod_smn)
+#' 
+#' # delete the simulated data
+#' unlink(ssn_path, recursive = TRUE)
 
-smnet<-function(formula, data.object, netID = 1, method = "AICC", control = NULL)
+
+
+
+smnet <- function(formula, data.object, netID = 1, method = "AICC", control = NULL)
 {  
   
   adjacency <- NULL
   default.control = list(trace = 0, maxit = 1000, checks = T, start = NULL, approx = NULL, 
                          verbose = TRUE, tol = 10^-6, optim.method = "Nelder-Mead")
-  if(!is.null(control)) for(i in 1:length(control)) default.control[names(control)[i]]<-list(control[[i]])
+  if(!is.null(control)) for(i in 1:length(control)) default.control[names(control)[i]] <- list(control[[i]])
   
   
   # ERROR CHECK AND PROCESS THE control INPUT
@@ -18,9 +183,6 @@ smnet<-function(formula, data.object, netID = 1, method = "AICC", control = NULL
     if(!is.null(do.checks)) if(!is.logical(do.checks)) stop("check should be logical or NULL", domain = NA, call. = FALSE) 
     if(is.null(do.checks)) do.checks <- TRUE
   }
-  
-  
-  
   
   # ERROR CHECK AND PROCESS THE method INPUT
   if(!method %in% c("AICC", "AIC", "GCV")){
@@ -168,8 +330,8 @@ smnet<-function(formula, data.object, netID = 1, method = "AICC", control = NULL
   R2     <- 1 - sum((response - fitted.values)^2)/sum((response - mean(response))^2)
   np     <- ifelse(is.null(opt$ED), ncol(model_objects$X.spam), opt$ED)
   R2.adj <- R2 - ((1-R2)*np)/(nrow(model_objects$X.spam) - np - 1)
-  if(control$verbose) cat(paste("   n = ", (nrow(model_objects$X.spam)), sep = ""))
-  if(control$verbose) cat(paste("  R2.adj", " = ", round(R2.adj, 3), sep = ""))
+  if(default.control$verbose) cat(paste("   n = ", (nrow(model_objects$X.spam)), sep = ""))
+  if(default.control$verbose) cat(paste("  R2.adj", " = ", round(R2.adj, 3), sep = ""))
 
   # create output list
   outputList               <- vector("list")

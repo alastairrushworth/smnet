@@ -1,3 +1,5 @@
+#' @importFrom spam kronecker.spam
+
 construct_bspline_penalty <- function(variables_length, dimensions, term.number, blockzero, cyclic){
   # if only a single variable, then build spline basis
   if(variables_length == 1){

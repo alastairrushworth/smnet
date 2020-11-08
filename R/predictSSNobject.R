@@ -1,5 +1,6 @@
+#' @importFrom spam cbind.spam
 
-predictSSNobject<-function(object){
+predictSSNobject <- function(object){
   
   #   put all of the components of new design matrix in a list
   newX <- vector("list")
@@ -40,15 +41,17 @@ predictSSNobject<-function(object){
   
   if(object$internals$net){
     # construct network component
+    ridPredRemap  <- re_map_rid(rid_vector = ridPred, all_rid = as.integer(object$internals$adjacency$rid_bid[, 1]))
     newX <- c(newX, 
-              spam(x = list(i = 1:length(ridPred), 
-                            j = ridPred, 
-                            val = rep(1, length(ridPred))), 
-                   nrow = length(ridPred), 
-                   ncol = ncol(object$internals$X.list[[length(object$internals$X.list)]])))
+              spam(
+                x = list(i   = 1:length(ridPredRemap), 
+                         j   = ridPredRemap, 
+                         val = rep(1, length(ridPredRemap))), 
+                nrow = length(ridPred), 
+                ncol = ncol(object$internals$X.list[[length(object$internals$X.list)]])))
   }
   
-  #   put together the linear, smooth and network components
+  # put together the linear, smooth and network components
   newX           <- lapply(newX, as.matrix)
   Xstar          <- Reduce("cbind.spam", newX)
   predictions    <- as.numeric(Xstar %*% object$internals$beta_hat)

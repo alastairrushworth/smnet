@@ -1,3 +1,4 @@
+#' @export
 show_weights <- function(SSNobject, adjacency, netID = 1){
   # extract the network structure data 
   rid_data        <- SSNobject@data

@@ -1,4 +1,4 @@
-
+#' @importFrom spam bdiag.spam
 # utility to calculate the block diagonal penalty matrices for spline penalisation
 
 get_block_penalty<-function(P, blockzero, i){        

@@ -1,3 +1,7 @@
+#' @importFrom spam chol.spam
+#' @importFrom spam backsolve.spam
+#' @importFrom spam forwardsolve.spam
+#' @importFrom stats optimize
 
 get_optimal_smooth<-function(P.list, X.spam, XTX.spam, X.list, 
                              response, control,

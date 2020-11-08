@@ -1,3 +1,4 @@
+#' @importFrom splines splineDesign
 
 # Construct sparse B-spline basis
 b_spline_basis  	<-	function(x, nseg = 10, deg = 3, range.variables){

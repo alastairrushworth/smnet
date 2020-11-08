@@ -1,3 +1,21 @@
+#' @importFrom graphics par
+#' @importFrom graphics plot.default
+#' @importFrom graphics lines
+#' @importFrom graphics rug
+#' @importFrom graphics filled.contour
+#' @importFrom grDevices heat.colors
+#' @importFrom graphics layout
+#' @importFrom graphics plot.new
+#' @importFrom graphics plot.window
+#' @importFrom graphics axis
+#' @importFrom utils modifyList
+#' @importFrom graphics points
+#' @importFrom graphics box
+#' @importFrom graphics mtext
+#' @importFrom graphics Axis
+#' @importFrom graphics title
+
+
 plot_cov<-function(x, res = res, ...)
 {
   def.par     <- par(no.readonly = TRUE) # save default, for resetting...

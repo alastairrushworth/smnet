@@ -1,3 +1,6 @@
+#' @importFrom spam colSums.spam
+#' @importFrom spam diag.spam
+#' @importFrom stats terms
 
 get_model_objects<-function(formula, data, adjacency, 
                                  response.locs, formulaout,
@@ -92,8 +95,6 @@ get_model_objects<-function(formula, data, adjacency,
     X.list[[n.linear+n.smooth+2]]<-spam(
       list(i = 1:n, j = (as.numeric(response.locs)+add.one),  rep(1, n)), 
       nrow = n, ncol = n.segments)
-    # this identity matrix is going to be a ridge penalty for the network component
-    # networkStabiliser <- diag.spam(1, n.segments)
     networkStabiliser <- crossprodspam(X.list[[n.linear+n.smooth+2]])
   }
   
@@ -148,7 +149,7 @@ get_model_objects<-function(formula, data, adjacency,
     Pwee         <- c(Pwee, D2 = D2, ID = networkStabiliser)
     Pwee.list    <- c(Pwee.list, list(Pwee))
     netpen       <- get_block_penalty(networkStabiliser, blockzero, i = n.terms + 1)
-    diag.spam(netpen)[1:(n.linear + 1)] <- 0
+    spam::diag.spam(netpen)[1:(n.linear + 1)] <- 0
     P.seg        <- c(P.seg, P2 = P2, netpen)
     P.list       <- c(P.list, list(P.seg))
   }

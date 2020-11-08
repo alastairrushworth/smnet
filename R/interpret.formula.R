@@ -1,3 +1,5 @@
+#' @importFrom stats terms.formula
+#' @importFrom stats as.formula
 
 interpret.formula <- function (formula.object) 
 {

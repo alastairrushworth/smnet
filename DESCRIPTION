@@ -3,8 +3,8 @@ Type: Package
 Title: Smoothing for Stream Network Data
 Version: 2.1.2
 Date: 2020-11-07
-Depends: R (>= 3.0.1), SSN, spam
-Imports: splines, RSQLite, DBI, methods, stats, graphics
+Depends: R (>= 3.0.1), SSN
+Imports: graphics, grDevices, methods, RSQLite, spam, splines, stats
 Author: Alastair Rushworth
 Maintainer: Alastair Rushworth <alastairmrushworth@gmail.com>
 Description: Fits flexible additive models to data on stream networks, taking account of flow-connectivity of the network.  Models are fitted using penalised least squares.
@@ -15,3 +15,5 @@ BugReports: https://github.com/alastairrushworth/smnet/issues
 ByteCompile: yes
 Repository: CRAN
 Suggests: testthat
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

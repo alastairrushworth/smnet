@@ -1,3 +1,8 @@
+#' @importFrom spam update.spam.chol.NgPeyton
+#' @importFrom spam backsolve.spam
+#' @importFrom spam forwardsolve.spam
+#' @importFrom stats rnorm
+
 get_crit_exact<-function(rhoArgs, X, XTX, P, response, cholFactor, n, 
                           np = nrow(XTX), Xw, Xy, n.sm, identifyBit, crit){    
 

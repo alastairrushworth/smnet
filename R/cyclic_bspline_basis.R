@@ -1,3 +1,4 @@
+#' @importFrom splines splineDesign
 # Construct cyclic sparse B-spline basis
 cyclic_b_spline_basis  	<-	function(x, nseg = 10, deg = 3, range.variables){
   nseg            <- nseg + 3

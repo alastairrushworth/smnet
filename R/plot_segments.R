@@ -1,6 +1,8 @@
+#' @importFrom graphics lcm
 
-plot_segments<-function(x, weight, netID, se, sites, sites.col, sites.cex, shadow, legend.text,
-                        legend.range, network.col, key,...){    
+plot_segments <- function(
+  x, weight, netID, se, sites, sites.col, sites.cex, shadow, legend.text,
+  legend.range, network.col, key, ...){    
   
   # break up beta_hat
   getcol    <- function(M) ifelse(ncol(M) == "NULL", 1, ncol(M)) 

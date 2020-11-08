@@ -1,3 +1,6 @@
+#' @importFrom graphics axis
+#' @importFrom graphics rect
+
 colour.key <- function(cols, brks, mar.adj = TRUE, natural = TRUE)  {
    ngrid <- length(cols)
    xvec  <- rep(0, ngrid)

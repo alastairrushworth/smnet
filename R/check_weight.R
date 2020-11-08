@@ -23,7 +23,7 @@ check_weight <- function(adj, wgt){
       n_lower         <- length(which_lower)
       sum_up_weight   <- sum(wgt[which_upper])
       sum_dn_weight   <- sum(wgt[which_lower])
-      dead_ends       <- sum(colSums(adj$adjacency)[which_lower] == 0)
+      dead_ends       <- sum(colSums.spam(adj$adjacency)[which_lower] == 0)
       dis_network     <- dis_network + (n_lower - sum_up_weight - dead_ends)^2
       dis_additive    <- dis_additive + (sum_dn_weight - sum_up_weight - dead_ends*min_weight)^2
     }

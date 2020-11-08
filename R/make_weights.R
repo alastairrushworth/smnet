@@ -1,3 +1,5 @@
+#' @importFrom stats runif
+
 make_weights<-function(adjacency, type = "unif"){
   adjacency<-as.matrix(adjacency)
   nrowAdj<-nrow(adjacency)

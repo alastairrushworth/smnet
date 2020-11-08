@@ -1,10 +1,14 @@
+#' @importFrom spam triplet
+#' @importFrom spam rowSums.spam
+#' @importFrom spam colSums.spam
+
 adjacency_to_shreve <- function(adjacency){
   trips        <- triplet(adjacency$adjacency)$indices
   shreve.order <- inverse.order <- vector("numeric", length = nrow(adjacency$adjacency))
   #   INVERSE ORDER PROVIDES THE NUMBER OF STREAM SEGMENTS
   #   EACH SEGMENTS LIES UPSTREAM FROM THE SOURCE
   # the root node is the segment that has no downstream neighbours, ie. the outlet
-  root.node    <- which(rowSums(adjacency$adjacency) == 0)
+  root.node    <- which(rowSums.spam(adjacency$adjacency) == 0)
   if(length(root.node) > 1){
     bid_roots <- nchar(adjacency$rid_bid[root.node, 2])
     root.node <- root.node[which(bid_roots == max(bid_roots))]
@@ -18,7 +22,7 @@ adjacency_to_shreve <- function(adjacency){
   inverse.order <- nchar(adjacency$rid_bid[, 2])
   for(i in 1:nrow(trips)) inverse.order[trips[i,1]] <- inverse.order[trips[i,2]] + 1
   # sources is a vector indicating the segments that have no upstream neighbours, ie the sources of the stream
-  sources <- which(colSums(adjacency$adjacency) == 0)
+  sources <- which(colSums.spam(adjacency$adjacency) == 0)
   # shreve.order assigns a weight of 1 to these source segments
   shreve.order[sources] <- 1
   # remaining gives the network 'heights' of the non-source segments that remain

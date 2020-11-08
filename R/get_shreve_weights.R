@@ -1,9 +1,10 @@
+#' @importFrom spam triplet
 
 get_shreve_weights<-function(adjacency, shreve.order){
   # convert shreve to weights
-  n.segments<-nrow(adjacency)
-  shreve.weights<-vector("numeric", length = nrow(adjacency))
-  ij<-triplet(adjacency)$indices
+  n.segments <- nrow(adjacency)
+  shreve.weights <- vector("numeric", length = nrow(adjacency))
+  ij  <- triplet(adjacency)$indices
   
   for(j in 1:n.segments){
     ij.ind<-which(ij[,2] == j)

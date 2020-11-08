@@ -1,4 +1,8 @@
 
+#' @importFrom spam chol.spam
+#' @importFrom spam backsolve.spam
+#' @importFrom spam forwardsolve.spam
+
 get_lm_fit<-function(P.list, X.spam, XTX.spam, X.list, response, 
                      n.linear = n.linear, sm.names, lin.names, 
                      lin.means){
