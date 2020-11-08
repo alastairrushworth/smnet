@@ -1,5 +1,34 @@
-#' @importFrom spam spam
+#' Construct a Stream Network Adjacency Matrix
+#' 
+#' @description Builds a sparse adjacency matrix from a user specified 
+#' \code{SSN} data directory, by extracting and processing the 
+#' \code{binaryID.db} table.  The resulting output of this function is 
+#' required input for fitting spatial additive network models to \code{SSN} 
+#' objects using the main \code{\link{smnet}} function.
+#' 
+#' @param ssn_directory Required character string indicating the path to the 
+#' location of the .ssn directory which contains the binaryID.db table.
+#' @param netID Logical.  Integer specifying the particular stream network 
+#' of interest within the \code{SSN} object.  Defaults to 1.
+#' 
+#' @return List object with components
+#' \itemize{
+#' \item{\code{adjacency}: Sparse adjacency matrix of class \code{spam} with row and 
+#' column dimension equal to the number of stream segments.  If the i^th column 
+#' has non-zero elements \eqn{j_1}{j_1} and \eqn{j_2}{j_2} then this indicates 
+#' that \eqn{j_1}{j_1} and \eqn{j_2}{j_2} are direct upstream neighbours of i.
+#'   If the \eqn{i^\textrm{th}}{i^th} column has sum 1, then this indicates that 
+#'   \eqn{i}{i} has only one upstream neighbour, and therefore no confluence lies
+#'    between them; by default the spatial penalties treat these differently.}
+#' \item{\code{bid}: Character vector of binary identifiers for each stream segment, 
+#' used only for automatic calculation of Shreve's stream order within 
+#' \code{smnet}}
+#' }
+#' 
+#' @author Alastair Rushworth
+#' @seealso   \code{\link[=smnet]{smnet}}, \code{\link{plot.smnet}}, \code{\link{predict.smnet}}
 #' @export
+#' @importFrom spam spam
 
 get_adjacency <- function(ssn_directory, netID = 1){
   binaryIDs  <- get_binaryIDs(ssn_directory, net = netID)

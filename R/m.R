@@ -1,7 +1,28 @@
-
+#' Specify Smooth Terms in Formulae
+#' 
+#' @description Function used to set up univariate or bivariate smooth terms 
+#' based on P-splines, for use within a call to \code{\link{smnet}}.
+#' 
+#' @param ... one or more variables for creating P-spline smooths.
+#' @param k integer defining the number of uniformly spaced B-spline basis functions 
+#' for the smooth, default is 10.  For 2d (and higher) smooths, this is the marginal 
+#' basis size.
+#' @param cyclic logical vector indicating whether the smooth should be cyclic.  
+#' Based on the harmonic smoother of Eiler and Marx (2004)
+#' 
+#' @return List object with components
+#' \itemize{
+#' \item{\code{term}: character vector of the names of the variables involved in the smooth to be set up}
+#' \item{\code{bs.dim}: number of B-spline basis functions to be used in the smooth}
+#' }
+#' 
+#' @references  Modified version of \code{s} originally from package \code{mgcv}, Simon Wood (2014).
+#' @author Alastair Rushworth
+#' @seealso \code{\link[=smnet]{smnet}}, \code{\link{plot.smnet}}, \code{\link{predict.smnet}}
 #' @importFrom stats terms
 #' @importFrom stats reformulate
 #' @export
+#' 
 
 m <- function (...,  k = -1, cyclic = F) {
   vars   <- as.list(substitute(list(...)))[-1]

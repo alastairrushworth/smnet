@@ -1,4 +1,19 @@
+#' Search for and Validate Weights Columns in an SSN Object
+#' 
+#' @description Explore SSN objects for valid stream weights for use in fitting stream network models.
+#' 
+#' @param SSNobject \code{SpatialStreamNetwork} containing data to be searched for valid network weights
+#' for the smooth, default is 10.  For 2d (and higher) smooths, this is the marginal 
+#' basis size.
+#' @param adjacency adjacency object corresponding to \code{SSNobject}, resulting from a call to \code{get_adjacency()}.
+#' @param netID Positive integer indicating the network number to investigate, if multiple networks are contained in \code{SSNobject}.  Default is 1.
+#'
+#'  @return Prints the names of valid weight variables to the console.
+#' 
+#' @author Alastair Rushworth
+#' @seealso   \code{\link[=smnet]{smnet}}, \code{\link{plot.smnet}}, \code{\link{predict.smnet}}
 #' @export
+#' 
 show_weights <- function(SSNobject, adjacency, netID = 1){
   # extract the network structure data 
   rid_data        <- SSNobject@data

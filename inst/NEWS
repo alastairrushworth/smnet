@@ -1,9 +1,11 @@
-	CHANGES IN VERSION 2.1.2 07/11/2020
+	CHANGES IN VERSION 2.1.2 08/11/2020
 	-----------------------------------
 	
-	- tidied up tests
+	- dropped dependency on DBI, all other dependencies importFrom, rather than import.
+	- all documentation now made with roxygen2
+	- add lots of extra tests
 	- fix bug causing predict to fail when multiple networks present 
-	- update readme
+	- add readme on github
 	
 	CHANGES IN VERSION 2.1.1 30/03/2017
 	-----------------------------------
