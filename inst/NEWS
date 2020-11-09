@@ -3,8 +3,9 @@
 	
 	- dropped dependency on DBI, all other dependencies importFrom, rather than import.
 	- all documentation now made with roxygen2
-	- add lots of extra tests
+	- extra tests
 	- fix bug causing predict to fail when multiple networks present 
+	- fix issue where predict would ignore newdata argument
 	- add readme on github
 	
 	CHANGES IN VERSION 2.1.1 30/03/2017
